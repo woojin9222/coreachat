@@ -9,21 +9,10 @@ export default function SignUp() {
 
     const handleGoogleSignIn = async (e) => {
         e.preventDefault(); // Prevent default form submission
-    
-        const { data, error } = await supabase.auth.signInWithOAuth({
-          provider: 'google', // Specify the provider
-          options: {
-            redirectTo: 'https://jmidonpzzzgcmpzhwipg.supabase.co/auth/v1/callback',
-          },
-        });
-    
-        if (error) {
-          console.error('Error signing in with Google:', error);
-        } else {
-          if (data.url) {
-            window.location.href = data.url; // Redirect to the URL provided by Supabase
-          }
-        }
+        supabase.auth.signInWithOAuth({
+        provider: 'google',
+        })
+
       };
       
     return(
