@@ -40,12 +40,12 @@ export default function SignUp() {
     
         try {
           const { error } = await supabase.auth.signUp({
-            email: email ,
-            password: password,
+            email,
+            password,
             options: {
               emailRedirectTo: 'https://coreachat.vercel.app/',
               data: {
-                displayName: displayName,
+                displayName,
               },
             },
           });
