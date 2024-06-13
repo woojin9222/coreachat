@@ -35,8 +35,14 @@ export default function login() {
         const { email, password } = formData;
     
         try {
-          const { error } = await supabase.auth.signInWithPassword({ email, password });
-    
+          const { error } = await supabase.auth.signInWithPassword({ 
+            email,
+            password, 
+            options: {
+                emailRedirectTo: 'https://coreachat.vercel.app/' 
+             },
+            });
+
           if (error) {
             console.error('Error signing in:', error.message);
             alert('로그인에 실패했습니다. 이메일과 비밀번호를 확인하세요.');
