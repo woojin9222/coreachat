@@ -36,8 +36,11 @@ export default function login() {
     
         try {
           const { error } = await supabase.auth.signInWithPassword({ 
-            email,
-            password, 
+            email: email,
+            password: password, 
+            options: {
+                redirectTo: 'https://coreachat.vercel.app/',
+                },
             });
 
           if (error) {
