@@ -12,7 +12,7 @@ export default function SignUp() {
         await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: 'https://coreachat.vercel.app/',
+            redirectTo: '/',
           },
         })
 
@@ -43,7 +43,7 @@ export default function SignUp() {
             email,
             password,
             options: {
-              emailRedirectTo: 'https://coreachat.vercel.app/',
+              emailRedirectTo: '/',
               data: {
                 displayName,
               },

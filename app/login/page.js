@@ -13,7 +13,7 @@ export default function login() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'https://coreachat.vercel.app/',
+        redirectTo: '/',
       },
     })
     };
@@ -38,9 +38,6 @@ export default function login() {
           const { error } = await supabase.auth.signInWithPassword({ 
             email,
             password, 
-            options: {
-                emailRedirectTo: 'https://coreachat.vercel.app/',
-             },
             });
 
           if (error) {
