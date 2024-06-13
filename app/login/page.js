@@ -39,7 +39,7 @@ export default function login() {
             email,
             password, 
             options: {
-                emailRedirectTo: 'https://coreachat.vercel.app/' 
+                RedirectTo: 'https://coreachat.vercel.app/' 
              },
             });
 
