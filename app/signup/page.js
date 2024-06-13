@@ -8,10 +8,14 @@ import supabase from "../utils/supabase/server.js";
 export default function SignUp() {
 
     const handleGoogleSignIn = async (e) => {
-        e.preventDefault(); // Prevent default form submission
-        supabase.auth.signInWithOAuth({
-        provider: 'google',
+            e.preventDefault(); // Prevent default form submission
+        await supabase.auth.signInWithOAuth({
+          provider: google,
+          options: {
+            redirectTo: 'https://coreachat.vercel.app/`,
+          },
         })
+
 
       };
       
