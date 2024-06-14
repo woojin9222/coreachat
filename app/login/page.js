@@ -34,7 +34,7 @@ export default function login() {
       const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent default form submission
         const { email, password } = formData;
-    
+        const route = useRoute();
         try {
           const { error } = await supabase.auth.signIn({ 
             email: email,
@@ -49,7 +49,7 @@ export default function login() {
             alert('로그인에 실패했습니다. 이메일과 비밀번호를 확인하세요.');
           } else {
             console.log('Login successful');
-            
+            router.push('/');
             // 로그인 성공 후 리다이렉트 또는 다른 로직 추가
           }
         } catch (error) {
