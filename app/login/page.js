@@ -35,7 +35,7 @@ export default function login() {
     const { email, password } = formData;
 
     try {
-      const { error } = await supabase.auth.signIn({
+      const { error } = await supabase.auth.signInWithPassword({
         email: email,
         password: password,
       });
@@ -43,7 +43,7 @@ export default function login() {
       if (error) {
         console.error('Error signing in:', error.message);
         alert('로그인에 실패했습니다. 이메일과 비밀번호를 확인하세요.');
-      } else {
+      } else {l
         console.log('Login successful');
         //router.push('/');
         // 로그인 성공 후 리다이렉트 또는 다른 로직 추가

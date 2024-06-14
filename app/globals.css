@@ -42,19 +42,20 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  form{
+  
+  .form{
     display: flex;
     flex-direction: column;
     gap: 15px;
 
-    input{
+    .input{
       padding: 15px;
       border: none;
       border-bottom: 1px solid rgb(57, 73, 71);
 
       
     }
-    button{
+    .button{
       background-color: rgb(109, 146, 134);
       color: white;
       padding: 10px;
@@ -65,4 +66,18 @@ body {
   }
   
 
+}
+.send{
+  text-align: center;
+  display: flex;
+  background-color: rgb(109, 146, 134);
+  color: white;
+  padding: 10px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  height: 50px;
+  width: 120px;
+  margin-top: auto;
+  
 }
