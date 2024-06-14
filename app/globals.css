@@ -68,16 +68,10 @@ body {
 
 }
 .send{
-  text-align: center;
-  display: flex;
   background-color: rgb(109, 146, 134);
-  color: white;
-  padding: 10px;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  height: 50px;
-  width: 120px;
-  margin-top: auto;
-  
+      color: white;
+      padding: 10px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
 }
