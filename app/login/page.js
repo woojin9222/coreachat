@@ -34,7 +34,7 @@ export default function login() {
       const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent default form submission
         const { email, password } = formData;
-        const route = useRoute();
+        const router = useRouter();
         try {
           const { error } = await supabase.auth.signIn({ 
             email: email,
