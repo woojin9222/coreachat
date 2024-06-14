@@ -67,11 +67,14 @@ body {
   
 
 }
-.send{
-  background-color: rgb(109, 146, 134);
-      color: white;
-      padding: 10px;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
+.send-message{
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  background-color: rgb(140, 165, 157);
+  border-top: 1px solid black;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+
 }
