@@ -3,6 +3,7 @@ import Link from "next/link";
 import supabase from "../utils/supabase/server.js";
 import { useState } from 'react';
 
+import { useRouter } from 'next/router';
 
 
 export default function login() {
@@ -48,6 +49,7 @@ export default function login() {
             alert('로그인에 실패했습니다. 이메일과 비밀번호를 확인하세요.');
           } else {
             console.log('Login successful');
+            
             // 로그인 성공 후 리다이렉트 또는 다른 로직 추가
           }
         } catch (error) {
