@@ -1,77 +1,93 @@
-'use client';
+'use client'
+import supabase from './utils/supabase/client';
+import { useState, useEffect, useCallback } from 'react';
 
-import { useState, useEffect } from 'react';
-import supabase from './utils/supabase/client.js';
+function Chat() {
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [channels, setChannels] = useState([]);
+  const [selectedChannel, setSelectedChannel] = useState('');
 
-export default function Chat({ initialMessages }) {
-    const [messages, setMessages] = useState(initialMessages);
-    const [newMessage, setNewMessage] = useState('');
-    const [user, setUser] = useState(null);
-  
-    useEffect(() => {
-      // Check for user session on component mount
-      const session = supabase.auth.getSession();
-      setUser(session?.user ?? null);
-  
-      // Set up listener for auth state changes
-      const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-        setUser(session?.user ?? null);
-      });
-  
-      // Clean up the listener on component unmount
-      return () => {
-        authListener.subscription.unsubscribe();
-      };
-    }, []);
-  
-    const fetchMessages = async () => {
+  useEffect(() => {
+    // 채널을 가져오는 함수
+    const fetchChannels = async () => {
       const { data, error } = await supabase
-        .from('messages')
-        .select('*')
-        .order('created_at', { ascending: true });
-  
+        .from('channel') // 스키마를 한 번만 지정
+        .select('*');
+
       if (error) {
-        console.error('Error fetching messages:', error.message);
+        console.error('Error fetching channels:', error.message);
       } else {
-        setMessages(data);
+        setChannels(data);
+        if (data.length > 0) {
+          setSelectedChannel(data[0].id); // 첫 번째 채널을 기본 선택
+        }
       }
     };
-  
-    const handleSendMessage = async (e) => {
-      e.preventDefault();
-      if (!newMessage.trim() || !user) return;
-  
-      const { data, error } = await supabase
-        .from('messages')
-        .insert([{ context: newMessage, author: user.id }]);
-  
-      if (error) {
-        console.error('Error sending message:', error.message);
-      } else {
-        setNewMessage('');
-        fetchMessages();
-      }
+
+    fetchChannels();
+
+    const channel = supabase
+      .channel('public:messages')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+        setMessages(prevMessages => [...prevMessages, payload.new]);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
     };
-  return(
+  }, []);
+
+  const sendMessage = useCallback(async () => {
+    if (!selectedChannel) {
+      console.error('No channel selected');
+      return;
+    }
+
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError) {
+      console.error('Error fetching user:', userError.message);
+      return;
+    }
+
+    if (!user) {
+      console.error('User not authenticated');
+      return;
+    }
+
+    const { error } = await supabase
+      .from('messages')
+      .insert([{ content: newMessage, author: user.id, channel: selectedChannel, created_at: new Date() }]);
+
+    if (error) {
+      console.error('Error sending message:', error.message);
+    } else {
+      setNewMessage('');
+    }
+  }, [newMessage, selectedChannel]);
+
+  return (
     <div>
-        <div>
-        {messages && messages.map((message) => (
-          <div key={message.id}>
-            <p>{message.content}</p>
-            <span>{new Date(message.created_at).toLocaleString()}</span>
-          </div>
+      <select value={selectedChannel} onChange={(e) => setSelectedChannel(e.target.value)}>
+        {channels.map(channel => (
+          <option key={channel.id} value={channel.id}>
+            {channel.name} ({channel.type})
+          </option>
         ))}
-      </div>
-      <form onSubmit={handleSendMessage}>
-        <input
-          className='send-message'
-          type="text"
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-        />
-        <button type="submit">Send</button>
-      </form>
+      </select>
+      {messages.map(msg => (
+        <div key={msg.id}>{msg.content}</div>
+      ))}
+      <input 
+        type="text" 
+        value={newMessage} 
+        onChange={(e) => setNewMessage(e.target.value)} 
+        placeholder="Type your message here..."
+      />
+      <button onClick={sendMessage}>Send Message</button>
     </div>
   );
-
 }
+
+export default Chat;

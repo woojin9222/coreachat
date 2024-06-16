@@ -1,4 +1,4 @@
-import Chat from "./chat";
+import Chat from "./chat.js";
 export default function Home() {
 
   return (

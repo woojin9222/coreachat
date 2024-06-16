@@ -2,19 +2,29 @@
 import Link from "next/link";
 import supabase from "../utils/supabase/server.js";
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 
 
 export default function login() {
-
+  const router = useRouter(); // useRouter 훅을 사용합니다.
   const handleGoogleSignIn = async (e) => {
     e.preventDefault(); // Prevent default form submission
-    await supabase.auth.signInWithOAuth({
+    const { error, session } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: '/',
       },
-    })
+    });
+
+    if (error) {
+      console.error('Error signing in with Google:', error.message);
+      alert('구글 로그인 중 문제가 발생했습니다.');
+    } else {
+      // 세션 정보를 로컬 스토리지에 저장
+      localStorage.setItem('supabaseSession', JSON.stringify(session));
+      router.push('/');
+    }
   };
 
   const [formData, setFormData] = useState({
@@ -35,19 +45,17 @@ export default function login() {
     const { email, password } = formData;
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data: { session }, error } = await supabase.auth.signInWithPassword({
         email: email,
         password: password,
       });
 
-      if (error) {
-        console.error('Error signing in:', error.message);
-        alert('로그인에 실패했습니다. 이메일과 비밀번호를 확인하세요.');
-      } else {
-        console.log('Login successful');
-        //router.push('/');
-        // 로그인 성공 후 리다이렉트 또는 다른 로직 추가
-        window.location.href = '/';
+      if (error) throw error; 
+      // 에러가 있다면 예외를 발생시킵니다.
+      if (session) {
+        // 세션 정보를 로컬 스토리지에 저장
+        localStorage.setItem('supabaseSession', JSON.stringify(session));
+        router.push('/');
       }
     } catch (error) {
       console.error('Error signing in:', error.message);
