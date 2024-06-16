@@ -10,7 +10,7 @@ export default function Chat({ initialMessages }) {
   
     useEffect(() => {
       // Check for user session on component mount
-      const session = supabase.auth.session();
+      const session = supabase.auth.getSession();
       setUser(session?.user ?? null);
   
       // Set up listener for auth state changes
@@ -20,7 +20,7 @@ export default function Chat({ initialMessages }) {
   
       // Clean up the listener on component unmount
       return () => {
-        authListener.unsubscribe();
+        authListener.subscription.unsubscribe();
       };
     }, []);
   
@@ -64,6 +64,7 @@ export default function Chat({ initialMessages }) {
       </div>
       <form onSubmit={handleSendMessage}>
         <input
+          className='send-message'
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
