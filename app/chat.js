@@ -12,7 +12,7 @@ function Chat() {
     // 채널을 가져오는 함수
     const fetchChannels = async () => {
       const { data, error } = await supabase
-        .from('channel') // 스키마를 한 번만 지정
+        .from('channels') // 스키마를 한 번만 지정
         .select('*');
 
       if (error) {
@@ -27,15 +27,15 @@ function Chat() {
 
     fetchChannels();
 
-    const channel = supabase
-      .channel('public:messages')
+    const channels = supabase
+      .channels('public:messages')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
         setMessages(prevMessages => [...prevMessages, payload.new]);
       })
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(channels);
     };
   }, []);
 
@@ -70,9 +70,9 @@ function Chat() {
   return (
     <div>
       <select value={selectedChannel} onChange={(e) => setSelectedChannel(e.target.value)}>
-        {channels.map(channel => (
-          <option key={channel.id} value={channel.id}>
-            {channel.name} ({channel.type})
+        {channels.map(channels => (
+          <option key={channels.id} value={channels.id}>
+            {channels.name} ({channels.type})
           </option>
         ))}
       </select>
